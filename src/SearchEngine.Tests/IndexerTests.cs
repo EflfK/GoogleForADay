@@ -26,7 +26,22 @@ namespace SearchEngine.Tests
             Assert.NotNull(strippedHtml);
             Assert.Equal(expected, strippedHtml);
         }
-        
+
+        [Fact]
+        public void GetsChildLinks()
+        {
+            string html = "<html><head><title>some title here&laquo;</title></body><body><a href=\"http://www.google.com\">go to google</a><b>some&nbsp; text</b><a href=\"http://wwww.amazon.com\">go to amazon</a></body></html>";
+            List<string> expected = new List<string>
+            {
+                "http://www.google.com",
+                "http://wwww.amazon.com"
+            };
+
+            List<string> childLinks = Crawler.GetChildLinks(html);
+            
+            Assert.Equal(expected, childLinks);
+        }
+
         [Fact]
         public void GetsWordCounts()
         {
