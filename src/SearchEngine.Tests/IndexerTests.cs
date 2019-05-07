@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using SearchEngine.Indexer;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SearchEngine.Tests
 {
@@ -10,7 +11,7 @@ namespace SearchEngine.Tests
         [Fact]
         public async void ReadsWebpage()
         {
-            string content = await Crawler.GetContent("http://www.google.com");
+            string content = await Crawler.GetContent(new Uri("http://www.google.com"));
 
             Assert.NotNull(content);
         }
@@ -18,7 +19,8 @@ namespace SearchEngine.Tests
         [Fact]
         public void StripsHtml()
         {
-            string html = "<html><head><title>some title here&laquo;</title></body><body><a href=\"www.google.com\">go to google</a><b>some&nbsp; text</b></body></html>";
+            string html = "<html><head><title>some title here&laquo;</title><style>some style</style><script type=\"text/javscript\">function stuff(){}</script></head></body><body><a href=\"www.google.com\">go to google</a><b>some&nbsp; text</b></body></html>";
+
             string expected = "some title here go to google some text";
 
             string strippedHtml = Crawler.StripHtml(html);
@@ -33,11 +35,11 @@ namespace SearchEngine.Tests
             string html = "<html><head><title>some title here&laquo;</title></body><body><a href=\"http://www.google.com\">go to google</a><b>some&nbsp; text</b><a href=\"http://wwww.amazon.com\">go to amazon</a></body></html>";
             List<string> expected = new List<string>
             {
-                "http://www.google.com",
-                "http://wwww.amazon.com"
+                "http://www.google.com/",
+                "http://wwww.amazon.com/"
             };
 
-            List<string> childLinks = Crawler.GetChildLinks(html);
+            List<string> childLinks = Crawler.GetChildLinks(new Uri("http://www.google.com"), html).Select(url => url.AbsoluteUri).ToList();
             
             Assert.Equal(expected, childLinks);
         }
@@ -67,11 +69,12 @@ namespace SearchEngine.Tests
         [Fact]
         public async void GetsTitle()
         {
-            Crawler crawler = new Crawler("https://www.youtube.com/");
-            await crawler.Crawl();
+            string html = "<html><head><title>some title here&laquo;</title></body><body><a href=\"www.google.com\">go to google</a><b>some&nbsp; text</b></body></html>";
+            string expected = "some title here&laquo;";
 
-            Assert.NotNull(crawler.Title);
-            Assert.Equal("YouTube", crawler.Title);
+            string title = Crawler.GetTitle(html);
+            Assert.NotNull(title);
+            Assert.Equal(expected, title);
         }
     }
 }

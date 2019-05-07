@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Indexer", "Sea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Tests", "SearchEngine.Tests\SearchEngine.Tests.csproj", "{C8CA34EB-DBFB-4B20-841B-8B224FB0AD60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.UI", "SearchEngine.UI\SearchEngine.UI.csproj", "{89092AE5-E08B-4F7D-BA3D-5D7A644BDD02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.UI", "SearchEngine.UI\SearchEngine.UI.csproj", "{89092AE5-E08B-4F7D-BA3D-5D7A644BDD02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.Data", "SearchEngine.Data\SearchEngine.Data.csproj", "{BE713DB8-3170-4CC0-915D-063013D40D0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,18 @@ Global
 		{89092AE5-E08B-4F7D-BA3D-5D7A644BDD02}.Release|x64.Build.0 = Release|Any CPU
 		{89092AE5-E08B-4F7D-BA3D-5D7A644BDD02}.Release|x86.ActiveCfg = Release|Any CPU
 		{89092AE5-E08B-4F7D-BA3D-5D7A644BDD02}.Release|x86.Build.0 = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|x64.Build.0 = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE713DB8-3170-4CC0-915D-063013D40D0F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

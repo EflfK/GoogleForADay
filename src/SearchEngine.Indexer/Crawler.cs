@@ -9,27 +9,56 @@ namespace SearchEngine.Indexer
 {
     public class Crawler
     {
-        public string RawHtml { get; private set;}
-        public string StrippedHtml { get; private set; }
-        public string Url { get; private set; }
-        public string Title { get; private set; }
-        public Dictionary<string, int> WordCounts { get; private set; }
-        private int CrawlIndex { get; set; }
-        private int CrawlDepth { get; set; }
-        public List<Crawler> ChildCrawls { get; private set; }
-        
-        public Crawler(string url, int index = 0, int crawlDepth = 3)
+        public Uri InitialUrl { get; private set; }
+        public List<PageData> PagesData { get; private set; }
+
+        public Crawler(string url)
         {
-            this.Url = url;
-            this.CrawlIndex = index;
-            this.CrawlDepth = crawlDepth;
+            Uri initialUrl;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out initialUrl))
+                throw new Exception("Not a valid url!");
+
+            this.InitialUrl = initialUrl;
+
+            this.PagesData = new List<PageData>();
         }
 
-        public async Task Crawl()
+        public async Task Crawl(int maxCrawlIndex)
         {
-            this.RawHtml = await GetContent(this.Url);
-            this.StrippedHtml = StripHtml(this.RawHtml);
-            this.Title = GetTitle(this.RawHtml);
+            IEnumerable<Uri> crawlUrls = new List<Uri> { this.InitialUrl };
+            
+            for(int index = 0; index < maxCrawlIndex; index++)
+            {
+                IEnumerable<PageData> pagesData = await Task.WhenAll(crawlUrls.Select(crawlUrl => GetPageData(crawlUrl)));
+                this.PagesData.AddRange(pagesData);
+
+                crawlUrls = GetUncrawledChildUrls();
+            }
+        }
+
+        private List<Uri> GetUncrawledChildUrls()
+        {
+            return PagesData.SelectMany((pageData) =>
+            {
+                return pageData.ChildUrls;
+            }).Where(childUrl => !this.PagesData.Select(pageData => pageData.Url.AbsoluteUri).ToList().Contains(childUrl.AbsoluteUri)).Distinct().ToList();
+        }
+        
+        private async Task<PageData> GetPageData(Uri url)
+        {
+            string rawHtml = await GetContent(url);
+            string strippedHtml = StripHtml(rawHtml);
+            string title = GetTitle(rawHtml);
+            List<Uri> childLinks = GetChildLinks(url, rawHtml);
+            Dictionary<string, int> wordCounts = GetWordCounts(strippedHtml);
+            
+            return new PageData
+            {
+                Title = title,
+                Url = url,
+                WordCounts = wordCounts,
+                ChildUrls = childLinks,
+            };
         }
 
         public static string GetTitle(string rawHtml)
@@ -44,28 +73,31 @@ namespace SearchEngine.Indexer
 
         public static string StripHtml(string rawHtml)
         {
-            string strippedHtml = Regex.Replace(rawHtml, "<(.|\n)*?>|&(.)*?;", " "); // replace html tags and characters
+            string strippedHtml = Regex.Replace(rawHtml, "<script.*?(\\/>|<\\/script>)", " ");
+            strippedHtml = Regex.Replace(strippedHtml, "<style>(.|\n)*<\\/style>", " ");
+            strippedHtml = Regex.Replace(strippedHtml, "<(.|\n)*?>|&(.)*?;", " ");
             strippedHtml = Regex.Replace(strippedHtml, "[ ]{2,}", " "); // replace duplicate spaces
             return strippedHtml.Trim();
         }
 
-        public static List<string> GetChildLinks(string rawHtml)
+        public static List<Uri> GetChildLinks(Uri parentUrl, string rawHtml)
         {
-            var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
-            return regex.Matches(rawHtml).Cast<Match>().Select(m => m.Groups["href"].Value).ToList();
+            var regex = new Regex("<(a|link).*?href=(\"|')(?<href>.+?)(\"|').*?>", RegexOptions.IgnoreCase);
+            IEnumerable<string> childUrls = regex.Matches(rawHtml).Cast<Match>().Select(m => m.Groups["href"].Value);
+            return childUrls.Select(childUrl => childUrl.GetUri(parentUrl)).ToList();
         }
 
         public static Dictionary<string, int> GetWordCounts(string text)
         {
-            MatchCollection matches = Regex.Matches(text.ToLower(), @"\b[\w']*\b");
+            MatchCollection matches = Regex.Matches(text.ToLower(), @"\b[a-zA-Z']*\b"); //excludes numbers. to include numbers use: \b[\w']*\b
 
             return matches.Cast<Match>().Where(match => !String.IsNullOrEmpty(match.Value)).GroupBy(match => match.Value).ToDictionary(match => match.Key, match => match.Count());
         }
 
-        public static async Task<string> GetContent(string url)
+        public static async Task<string> GetContent(Uri url)
         {
             HttpClient client = new HttpClient();
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(url.AbsoluteUri);
 
             var pageContents = await response.Content.ReadAsStringAsync();
 
