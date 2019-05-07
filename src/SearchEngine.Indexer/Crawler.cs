@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SearchEngine.Indexer
 {
@@ -11,6 +13,7 @@ namespace SearchEngine.Indexer
         public string StrippedHtml { get; private set; }
         public string Url { get; private set; }
         public string Title { get; private set; }
+        public Dictionary<string, int> WordCounts { get; private set; }
 
         public Crawler(string url)
         {
@@ -39,6 +42,13 @@ namespace SearchEngine.Indexer
             string strippedHtml = Regex.Replace(rawHtml, "<(.|\n)*?>|&(.)*?;", " ");
             strippedHtml = Regex.Replace(strippedHtml, "[ ]{2,}", " "); // replace duplicate spaces
             return strippedHtml.Trim();
+        }
+
+        public static Dictionary<string, int> GetWordCounts(string text)
+        {
+            MatchCollection matches = Regex.Matches(text.ToLower(), @"\b[\w']*\b");
+
+            return matches.Cast<Match>().Where(match => !String.IsNullOrEmpty(match.Value)).GroupBy(match => match.Value).ToDictionary(match => match.Key, match => match.Count());
         }
 
         public static async Task<string> GetContent(string url)
