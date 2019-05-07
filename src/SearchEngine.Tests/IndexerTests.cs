@@ -16,7 +16,7 @@ namespace SearchEngine.Tests
         }
         
         [Fact]
-        public async void StripsHtml()
+        public void StripsHtml()
         {
             string html = "<html><head><title>some title here&laquo;</title></body><body><a href=\"www.google.com\">go to google</a><b>some&nbsp; text</b></body></html>";
             string expected = "some title here go to google some text";
@@ -28,7 +28,7 @@ namespace SearchEngine.Tests
         }
         
         [Fact]
-        public async void GetsWordCounts()
+        public void GetsWordCounts()
         {
             string text = "The quick brown fox jumps over the lazy dog. Fox is quick. Dog is lazy.";
             Dictionary<string, int> expected = new Dictionary<string, int>
