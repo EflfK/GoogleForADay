@@ -10,7 +10,7 @@ namespace SearchEngine.Data
     {
         private static readonly string FILENAME = "RankedPageData.json";
 
-        public static IEnumerable<SearchedPage> ReadRankedPagesContainingWord(string word)
+        public static List<SearchedPage> ReadRankedPagesContainingWord(string word)
         {
             if (word.Contains(' '))
                 throw new Exception("Single words only accepted.");
@@ -33,6 +33,9 @@ namespace SearchEngine.Data
 
         public static List<RankedPage> ReadRankedPages()
         {
+            if (!File.Exists(FILENAME))
+                return new List<RankedPage>();
+
             string json = File.ReadAllText(FILENAME);
             return JsonConvert.DeserializeObject<IEnumerable<RankedPage>>(json).ToList();
         }

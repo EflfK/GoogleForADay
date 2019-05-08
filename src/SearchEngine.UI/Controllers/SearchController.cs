@@ -8,9 +8,15 @@ using SearchEngine.UI.Models;
 
 namespace SearchEngine.UI.Controllers
 {
-    public class HomeController : Controller
+    public class SearchController : Controller
     {
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(SearchModel searchModel)
         {
             return View();
         }
