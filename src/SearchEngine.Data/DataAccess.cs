@@ -37,6 +37,10 @@ namespace SearchEngine.Data
                 return new List<RankedPage>();
 
             string json = File.ReadAllText(FILENAME);
+
+            if (String.IsNullOrEmpty(json))
+                return new List<RankedPage>();
+
             return JsonConvert.DeserializeObject<IEnumerable<RankedPage>>(json).ToList();
         }
 

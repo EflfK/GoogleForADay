@@ -63,9 +63,9 @@ namespace SearchEngine.Indexer
             if (String.IsNullOrEmpty(rawHtml))
                 return String.Empty;
 
-            Match m = Regex.Match(rawHtml, @"<title>\s*(.+?)\s*</title>");
+            Match m = Regex.Match(rawHtml, @"<title(.*?)>\s*(?<title>.+?)\s*</title>");
 
-            return m.Success ? m.Groups[1].Value : "N/A";
+            return m.Success && m.Groups["title"] != null ? m.Groups["title"].Value : "N/A";
         }
 
         public static string StripHtml(string rawHtml)
