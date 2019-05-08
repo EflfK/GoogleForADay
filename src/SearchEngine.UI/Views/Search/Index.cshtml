@@ -11,5 +11,18 @@
             <input type="text" id="searchWord" placeholder="Search Word Goes Here" name="searchWord" />
             <input type="submit" value="go" />
         </p>
+        @if (Model != null && !String.IsNullOrEmpty(Model.SearchWord))
+        {
+            <p>
+                Found @Model.WordMatches.Count results
+            </p>
+            @foreach (var item in Model.WordMatches)
+            {
+            <p>
+                <a href="@item.Url">@item.Title</a>
+                Occurrences: @item.WordCount
+            </p>
+            }
+        }
     </form>
 </div>

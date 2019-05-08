@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Google for a Day Search";
 }
+@model SearchEngine.UI.Models.SearchIndexModel
 
 <div class="text-center">
     <form method="post">
@@ -9,5 +10,9 @@
             <input type="submit" value="Index" name="searchIndex" />
             <input type="submit" value="Clear" name="clear" />
         </p>
+        @if (Model != null)
+        {
+            <p>Indexed @Model.NewPageCount new pages and @Model.WordCount words.</p>
+        }
     </form>
 </div>

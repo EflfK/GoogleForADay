@@ -35,7 +35,15 @@ namespace SearchEngine.UI.Controllers
                 });
 
                 DataAccess.WriteRankedPages(rankedPages);
+
+                return View(new SearchEngine.UI.Models.SearchIndexModel
+                {
+                    NewPageCount = rankedPages.Count(),
+                    IndexUrl = indexUrl,
+                    WordCount = rankedPages.SelectMany(rankedPage => rankedPage.WordCounts.Keys).Distinct().Count()
+                });
             }
+
             return View();
         }
     }

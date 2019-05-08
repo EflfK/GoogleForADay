@@ -18,7 +18,7 @@ namespace SearchEngine.UI.Controllers
         [HttpPost]
         public IActionResult Index(SearchModel searchModel)
         {
-            return View();
+            return View(searchModel);
         }
 
         public IActionResult Privacy()

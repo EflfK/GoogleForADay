@@ -15,11 +15,7 @@ namespace SearchEngine.Indexer
 
         public Crawler(string url)
         {
-            Uri initialUrl;
-            if (!Uri.TryCreate(url, UriKind.Absolute, out initialUrl))
-                throw new Exception("Not a valid url!");
-
-            this.InitialUrl = initialUrl;
+            this.InitialUrl = new UriBuilder(url).Uri;
 
             this.PagesData = new List<PageData>();
         }
