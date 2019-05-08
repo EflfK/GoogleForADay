@@ -65,13 +65,13 @@ namespace SearchEngine.Indexer
 
             Match m = Regex.Match(rawHtml, @"<title>\s*(.+?)\s*</title>");
 
-            return m.Success ? m.Groups[1].Value : String.Empty;
+            return m.Success ? m.Groups[1].Value : "N/A";
         }
 
         public static string StripHtml(string rawHtml)
         {
-            string strippedHtml = Regex.Replace(rawHtml, "<script.*?(\\/>|<\\/script>)", " ");
-            strippedHtml = Regex.Replace(strippedHtml, "<style>(.|\n)*<\\/style>", " ");
+            string strippedHtml = Regex.Replace(rawHtml, "<script((.|\n)*?)(\\/>|<\\/script>)", " ");
+            strippedHtml = Regex.Replace(strippedHtml, "<style>((.|\n)*)<\\/style>", " ");
             strippedHtml = Regex.Replace(strippedHtml, "<(.|\n)*?>|&(.)*?;", " ");
             strippedHtml = Regex.Replace(strippedHtml, "[ ]{2,}", " "); // replace duplicate spaces
             return strippedHtml.Trim();
