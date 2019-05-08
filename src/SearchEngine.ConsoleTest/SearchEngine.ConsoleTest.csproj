@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SearchEngine.Data\SearchEngine.Data.csproj" />
     <ProjectReference Include="..\SearchEngine.Indexer\SearchEngine.Indexer.csproj" />
   </ItemGroup>
 

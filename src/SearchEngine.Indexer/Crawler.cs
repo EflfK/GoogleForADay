@@ -91,7 +91,7 @@ namespace SearchEngine.Indexer
         {
             MatchCollection matches = Regex.Matches(text.ToLower(), @"\b[a-zA-Z']*\b"); //excludes numbers. to include numbers use: \b[\w']*\b
 
-            return matches.Cast<Match>().Where(match => !String.IsNullOrEmpty(match.Value)).GroupBy(match => match.Value).ToDictionary(match => match.Key, match => match.Count());
+            return matches.Cast<Match>().Where(match => !String.IsNullOrEmpty(match.Value)).GroupBy(match => match.Value).ToDictionary(match => match.Key.ToLower(), match => match.Count());
         }
 
         public static async Task<string> GetContent(Uri url)
