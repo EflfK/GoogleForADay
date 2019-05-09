@@ -11,17 +11,20 @@
             <input type="text" id="searchWord" placeholder="Search Word Goes Here" name="searchWord" />
             <input type="submit" value="go" />
         </p>
-        @if (Model != null && !String.IsNullOrEmpty(Model.SearchWord))
+        <p>
+            @Html.ValidationMessageFor(m => m.SearchWord, null, new { @class = "text-danger" })
+        </p>
+        @if (Model != null && Model.WordMatches != null)
         {
             <p>
                 Found @Model.WordMatches.Count results
             </p>
             @foreach (var item in Model.WordMatches)
             {
-            <p>
-                <a href="@item.Url">@item.Title</a>
-                Occurrences: @item.WordCount
-            </p>
+                <p>
+                    <a href="@item.Url">@item.Title</a>
+                    Occurrences: @item.WordCount
+                </p>
             }
         }
     </form>

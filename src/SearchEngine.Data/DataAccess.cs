@@ -12,6 +12,9 @@ namespace SearchEngine.Data
 
         public static List<SearchedPage> ReadRankedPagesContainingWord(string word)
         {
+            if (String.IsNullOrEmpty(word))
+                throw new Exception("A word must be provided");
+
             if (word.Contains(' '))
                 throw new Exception("Single words only accepted.");
 

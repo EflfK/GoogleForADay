@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SearchEngine.UI.Models;
+using SearchEngine.Data;
 
 namespace SearchEngine.UI.Controllers
 {
@@ -18,6 +19,14 @@ namespace SearchEngine.UI.Controllers
         [HttpPost]
         public IActionResult Index(SearchModel searchModel)
         {
+            try
+            {
+                searchModel.WordMatches = DataAccess.ReadRankedPagesContainingWord(searchModel.SearchWord);
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("SearchWord", ex.Message);
+            }
             return View(searchModel);
         }
 

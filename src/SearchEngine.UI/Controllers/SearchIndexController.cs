@@ -18,32 +18,39 @@ namespace SearchEngine.UI.Controllers
         [HttpPost]
         public IActionResult Index(string indexUrl, string clear, string searchIndex)
         {
-            if(!String.IsNullOrEmpty(clear))
+            try
             {
-                DataAccess.ClearRankedPages();
+                if (!String.IsNullOrEmpty(clear))
+                {
+                    DataAccess.ClearRankedPages();
+                }
+                else
+                {
+                    Crawler crawler = new Crawler(indexUrl);
+                    crawler.Crawl(2).Wait();
+
+                    IEnumerable<RankedPage> rankedPages = crawler.PagesData.Select(pd => new RankedPage
+                    {
+                        Title = pd.Title,
+                        Url = pd.Url.AbsoluteUri,
+                        WordCounts = pd.WordCounts
+                    });
+
+                    DataAccess.WriteRankedPages(rankedPages);
+
+                    return View(new SearchEngine.UI.Models.SearchIndexModel
+                    {
+                        NewPageCount = rankedPages.Count(),
+                        IndexUrl = indexUrl,
+                        WordCount = rankedPages.SelectMany(rankedPage => rankedPage.WordCounts.Keys).Distinct().Count()
+                    });
+                }
             }
-            else
+            catch(Exception ex)
             {
-                Crawler crawler = new Crawler(indexUrl);
-                crawler.Crawl(2).Wait();
-
-                IEnumerable<RankedPage> rankedPages = crawler.PagesData.Select(pd => new RankedPage
-                {
-                    Title = pd.Title,
-                    Url = pd.Url.AbsoluteUri,
-                    WordCounts = pd.WordCounts
-                });
-
-                DataAccess.WriteRankedPages(rankedPages);
-
-                return View(new SearchEngine.UI.Models.SearchIndexModel
-                {
-                    NewPageCount = rankedPages.Count(),
-                    IndexUrl = indexUrl,
-                    WordCount = rankedPages.SelectMany(rankedPage => rankedPage.WordCounts.Keys).Distinct().Count()
-                });
+                ModelState.AddModelError("IndexUrl", ex.Message);
             }
-
+            
             return View();
         }
     }

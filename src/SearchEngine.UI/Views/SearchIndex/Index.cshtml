@@ -10,6 +10,11 @@
             <input type="submit" value="Index" name="searchIndex" />
             <input type="submit" value="Clear" name="clear" />
         </p>
+
+        <p>
+            @Html.ValidationMessageFor(m => m.IndexUrl, null, new { @class = "text-danger" })
+        </p>
+
         @if (Model != null)
         {
             <p>Indexed @Model.NewPageCount new pages and @Model.WordCount words.</p>

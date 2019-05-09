@@ -15,6 +15,9 @@ namespace SearchEngine.Indexer
 
         public Crawler(string url)
         {
+            if (String.IsNullOrEmpty(url))
+                throw new Exception("A url must be provided");
+
             this.InitialUrl = new UriBuilder(url).Uri;
 
             this.PagesData = new List<PageData>();

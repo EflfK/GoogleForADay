@@ -10,12 +10,6 @@ namespace SearchEngine.UI.Models
     {
         public string SearchWord { get; set; }
 
-        public List<SearchedPage> WordMatches
-        {
-            get
-            {
-                return DataAccess.ReadRankedPagesContainingWord(SearchWord);
-            }
-        }
+        public List<SearchedPage> WordMatches { get; set; }
     }
 }
